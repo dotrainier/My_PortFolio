@@ -8,7 +8,11 @@
   --font-geist_sans: var(--font-geist_sans);
   --font-nunito_sans: var(--font-nunito_sans);
   --font-nunito: var(--font-nunito);
+
+  --breakpoint-ml: 880px
 }
+
+
 
 .loader-chatbot-message {
   width: 30px;

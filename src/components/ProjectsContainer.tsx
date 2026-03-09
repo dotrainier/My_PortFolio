@@ -9,7 +9,7 @@ import Twitter from "@/assets/images/projects/twitter.png"
 import TicTacToe from "@/assets/images/projects/tic-tac-toe.png"
 import ResumeBuilder from "@/assets/images/projects/resume.png"
 import TodoList from "@/assets/images/projects/todolist.png"
-import RockPaperScissor from "@/assets/images/projects/tic-tac-toe.png"
+import RockPaperScissor from "@/assets/images/projects/rock-paper-scissor.png"
 import Automatron from "@/assets/images/projects/automatron.png"
 
 gsap.registerPlugin(ScrollTrigger);
@@ -49,12 +49,12 @@ export default function ProjectContainer() {
   }, []);
 
   return (
-    <div className="pb-20">
+    <div className="pb-20  min-h-screen py-16 font-nunito_sans xl:px-48 lg:px-40 md:px-20 sm:px-12 px-8">
       <div className="text-3xl font-bold text-neutral-800 mb-8 dark:text-zinc-50">
         My Projects
       </div>
       
-      <div className="grid grid-cols-12 gap-12 project-container">
+      <div className="grid grid-cols-6  md:grid-cols-12 gap-12 project-container">
         <div className="col-span-6 space-y-10">
             <ProjectBox src={Bangketa} addToRefs={addToRefs} altText="bangketa" title="Bangketa - A Nonprofit Volunteer Website" link="https://bangketaeskwela.netlify.app/"/>
             <ProjectBox src={Twitter} addToRefs={addToRefs} altText="twitter" title="Twitter Clone" link="https://twitter-clone-delta-neon.vercel.app/"/>

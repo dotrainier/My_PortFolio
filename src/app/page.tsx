@@ -14,6 +14,8 @@ import { ScrollTrigger } from "gsap/ScrollTrigger";
 import myPic from "@/assets/images/my_pic.jpg"
 import StackContainer from "@/components/StackContainer";
 import ProjectContainer from "@/components/ProjectsContainer";
+import Certifications from "@/components/Certifications";
+import Contact from "@/components/Contact";
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -32,10 +34,6 @@ export default function Home() {
 
   useEffect(() => {
 
-      gsap.set([aboutPicRef.current, aboutTextRef.current], {
-        yPercent: 50
-      });
-
     gsap.to(introTextRef.current, {
       yPercent: -100,
       ease: "none",
@@ -47,7 +45,10 @@ export default function Home() {
       }
     });
 
-    gsap.to(aboutTextRef.current, {
+    gsap.fromTo(aboutTextRef.current, {
+      yPercent: 50
+      },
+      {
       yPercent: 0,
       ease: "none",
       scrollTrigger: {
@@ -58,7 +59,11 @@ export default function Home() {
       }  
     });
 
-    gsap.to(aboutPicRef.current, {
+    gsap.fromTo(aboutPicRef.current, 
+      {
+        yPercent: 50
+      },  
+      {
       yPercent: 0,
       ease: "none",
       scrollTrigger: {
@@ -120,21 +125,19 @@ export default function Home() {
           </div>
           <ThemeSwitcher></ThemeSwitcher>
         </div>
-        <div className="flex-1 flex  mt-40 mx-auto flex-col font-nunito_sans font-bold text-left dark:text-white text-[#111110] ">
+        <div className="flex-1 flex xl:px-32 md:px-16 sm:px-8 px-6  mt-40 mx-auto flex-col font-nunito_sans font-bold text-left dark:text-white text-[#111110] ">
           <div ref={introTextRef} className="relative " >
-            <div   className="text-7xl">I&apos;m Rainier,</div>
-            <div className=" text-7xl">Software Dev</div>
-            <div className="font-normal text-lg absolute top-full w-max"> 
-                <span className="inline-flex items-center gap-1">
-                  <span className="text-gray-400 dark:text-gray-500">
-                  {'<'}
-                  </span>
-                  <span className="text-red-400">Bugs</span>
-                  <span className="text-gray-800 dark:text-gray-200">hate me. Users love me. Problems? Just features waiting for my commit</span>
-                  <span className="text-gray-400 dark:text-gray-500">
-                    {'/>'}
-                  </span>
-                </span>  
+            <div   className="lg:text-5xl sm:text-3xl text-2xl md:text-4xl xl:text-7xl">I&apos;m Rainier,</div>
+            <div className="lg:text-5xl sm:text-3xl text-2xl md:text-4xl xl:text-7xl">Software Dev</div>
+            <div className="font-normal static text-lg ml:absolute top-full ml:w-max"> 
+                <span className="text-gray-400 dark:text-gray-500">
+                {'<'}
+                </span>
+                <span className="text-red-400">Bugs </span>
+                <span className="text-gray-800 dark:text-gray-200">hate me. Users love me. Problems? Just features waiting for my commit</span>
+                <span className="text-gray-400 dark:text-gray-500">
+                  {'/>'}
+                </span>
             </div>
           </div>
         </div>
@@ -147,32 +150,28 @@ export default function Home() {
         <FloatingSyntax/>
       </section> 
 
-    <section className="px-32 mt-40 py-4 space-y-2 text-gray-700 dark:text-zinc-50 box-border ">
+    <section className="xl:px-32  px-6 sm:px-8 md:px-16 mt-40 py-4 space-y-2 text-gray-700 dark:text-zinc-50 box-border ">
         <div>This is me.</div>
         <div className="h-[1px] bg-gray-700"></div>
 
-        <div className="flex  px-48  py-16 gap-28 justify-center" ref={aboutSectionRef}>
+        <div className="flex md:flex-nowrap flex-wrap py-16  gap-4 sm:gap-8 md:gap-16 xl:gap-28 justify-center" ref={aboutSectionRef}>
           <div className="h-max w-max relative rounded-md shadow-md shrink-0" ref={aboutPicRef}>
               <div className="absolute inset-0 bg-white border-r-2 border-b-2 border-r-blue-400 border-b-blue-400 rounded-[inherit]"></div>
               <Image  src={myPic} alt="pic"  className="h-auto w-72 aspect-auto z-10 hover:rotate-0 transition-transform  ease-in-out duration-300 rotate-[3deg] relative rounded-[inherit]"/>
           </div>
 
-          <div className="font-nunito_sans space-y-4 w-[600px]" ref={aboutTextRef}>
+          <div className="font-nunito_sans space-y-4 md:w-[600px]" ref={aboutTextRef}>
               <div>Passionate about crafting seamless, high-performance web applications with a strong focus on user experience. Skilled in modern frontend technologies like React and Next.js, coupled with robust backend development using Node.js and Express.js. Experienced in multiple programming languages, including Python, PHP, C++, and Java, with a solid foundation in software engineering principles.</div>
               <div>Driven by a commitment to continuous learning and innovation, I thrive on solving complex problems and delivering efficient, scalable solutions. Dedicated to writing clean, maintainable code and staying ahead of industry trends to build impactful digital experiences.</div>
           </div>
       </div>
     </section>
 
-   
-
-    <section className="font-nunito_sans px-48  py-20 ">
-        <StackContainer />
-    </section>
-
-    <section className="font-nunito_sans px-48 min-h-screen py-16 ">
-        <ProjectContainer />
-    </section>
+  
+    <StackContainer />
+    <ProjectContainer />
+    <Certifications />
+    <Contact />
 
    </main>
    </>
