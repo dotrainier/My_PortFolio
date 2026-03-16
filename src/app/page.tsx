@@ -1,10 +1,10 @@
 'use client';
-import ThemeSwitcher from '@/components/ThemeSwitcher';
 import Cursor from '@/components/Cursor';
 import Image from 'next/image';
 import logo from '../../public/logo.svg';
 import darkLogo from '../../public/dark-logo.svg';
 import FloatingSyntax from '@/components/Backgrounds/FloatingSyntax';
+import Navigation from '@/components/Navigation';
 import ScreenLoader from '@/components/ScreenLoader';
 import { useTheme } from 'next-themes';
 import { useRef, useEffect, useState } from 'react';
@@ -115,7 +115,7 @@ export default function Home() {
           ref={landingSectionRef}
           className='h-screen flex flex-col relative overflow-hidden'
         >
-          <ScreenLoader />
+          {/* <ScreenLoader /> */}
           <div className='px-4 py-4 flex justify-between'>
             <div className='flex items-center gap-1.5' ref={ref}>
               <Image
@@ -126,7 +126,7 @@ export default function Home() {
               />
               <div className='font-sans font-bold'>dotrainier</div>
             </div>
-            <ThemeSwitcher></ThemeSwitcher>
+            <Navigation />
           </div>
           <div className='flex-1 flex xl:px-32 md:px-16 sm:px-8 px-6  mt-40 mx-auto flex-col font-nunito_sans font-bold text-left dark:text-white text-[#111110] '>
             <div ref={introTextRef} className='relative '>
