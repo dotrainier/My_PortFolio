@@ -2,74 +2,136 @@
 import { motion } from 'framer-motion';
 import { useState, useEffect, useRef } from 'react';
 
-// Evenly distributed across the full viewport width (in %)
-const POSITIONS = [5, 15, 25, 35, 45, 55, 65, 75, 85, 95];
-const SYNTAXES = ['</>', 'λ', '%', '<<', '~', ';'];
-const ANIMATION_DURATION = 10;
-const SPAWN_INTERVAL = 1100;
+/* ── Symbols that match the portfolio's code aesthetic ── */
+const SYMBOLS = [
+  '{}',
+  '/>',
+  '()',
+  '=>',
+  '[]',
+  '/*',
+  '*/',
+  '&&',
+  '||',
+  '??',
+  '!=',
+  '++',
+  '--',
+  '::',
+  '<%',
+  '%>',
+  '~~',
+];
+
+/* ── Three depth layers — far, mid, near ── */
+const LAYERS = [
+  { size: 11, durationMin: 14, durationMax: 20, opacity: 0.35, blur: 'blur-sm' },
+  { size: 15, durationMin: 9, durationMax: 14, opacity: 0.55, blur: '' },
+  { size: 20, durationMin: 6, durationMax: 10, opacity: 0.75, blur: '' },
+] as const;
+
+const SPAWN_INTERVAL = 550;
 
 const getMaxItems = () => {
-  if (typeof window === 'undefined') return 5;
+  if (typeof window === 'undefined') return 6;
   const w = window.innerWidth;
-  if (w < 640) return 4;   // mobile
-  if (w < 1024) return 8;  // tablet
-  return 15;               // desktop
+  if (w < 640) return 5;
+  if (w < 1024) return 10;
+  return 18;
 };
 
-type SyntaxItem = { id: string; positionX: number; syntax: string };
+type SyntaxItem = {
+  id: string;
+  x: number;
+  symbol: string;
+  layerIdx: number;
+  duration: number;
+  rotation: number;
+  delay: number;
+};
 
 const FloatingSyntax: React.FC = () => {
-  const [syntaxes, setSyntaxes] = useState<SyntaxItem[]>([]);
-  const maxItemsRef = useRef(getMaxItems());
-  const idCounterRef = useRef(0);
+  const [items, setItems] = useState<SyntaxItem[]>([]);
+  const maxRef = useRef(getMaxItems());
+  const counterRef = useRef(0);
 
-  // Update max items on resize
   useEffect(() => {
-    const onResize = () => { maxItemsRef.current = getMaxItems(); };
+    const onResize = () => {
+      maxRef.current = getMaxItems();
+    };
     window.addEventListener('resize', onResize);
     return () => window.removeEventListener('resize', onResize);
   }, []);
 
   useEffect(() => {
     const interval = setInterval(() => {
-      setSyntaxes((prev) => {
-        if (prev.length >= maxItemsRef.current) return prev;
+      setItems((prev) => {
+        if (prev.length >= maxRef.current) return prev;
 
-        const positionX = POSITIONS[Math.floor(Math.random() * POSITIONS.length)];
-        const syntax = SYNTAXES[Math.floor(Math.random() * SYNTAXES.length)];
-        const id = `${Date.now()}-${idCounterRef.current++}`;
+        const layerIdx = Math.floor(Math.random() * LAYERS.length);
+        const layer = LAYERS[layerIdx];
+        const duration =
+          layer.durationMin + Math.random() * (layer.durationMax - layer.durationMin);
 
-        return [...prev, { id, positionX, syntax }];
+        const item: SyntaxItem = {
+          id: `${Date.now()}-${counterRef.current++}`,
+          x: Math.random() * 96,
+          symbol: SYMBOLS[Math.floor(Math.random() * SYMBOLS.length)],
+          layerIdx,
+          duration,
+          rotation: (Math.random() - 0.5) * 200,
+          delay: Math.random() * 0.4,
+        };
+        return [...prev, item];
       });
     }, SPAWN_INTERVAL);
 
     return () => clearInterval(interval);
   }, []);
 
-  const handleAnimationComplete = (id: string) => {
-    setSyntaxes((prev) => prev.filter((s) => s.id !== id));
-  };
+  const remove = (id: string) => setItems((prev) => prev.filter((s) => s.id !== id));
 
   return (
     <div className='absolute inset-0 z-20 overflow-hidden pointer-events-none'>
-      {syntaxes.map(({ id, positionX, syntax }) => (
-        <motion.div
-          key={id}
-          initial={{ y: -10, scale: 1, opacity: 0.9, rotate: 0 }}
-          animate={{ y: 300, scale: 0, opacity: 0, rotate: 360 }}
-          transition={{
-            y: { duration: ANIMATION_DURATION, ease: 'linear' },
-            rotate: { duration: 8, ease: 'linear' },
-            scale: { duration: 5, ease: 'linear', delay: 5 },
-            opacity: { duration: 5, ease: 'linear', delay: 5 },
-          }}
-          className='top-0 font-fira text-xl text-gray-500 absolute dark:text-[#4A90E2]'
-          style={{ left: `${positionX}vw` }}
-          onAnimationComplete={() => handleAnimationComplete(id)}
-        >
-          {syntax}
-        </motion.div>
-      ))}
+      {items.map((item) => {
+        const layer = LAYERS[item.layerIdx];
+
+        return (
+          <motion.span
+            key={item.id}
+            className={`absolute top-0 font-fira font-semibold select-none ${layer.blur} ${
+              item.layerIdx === 2
+                ? 'text-[#f87171]' /* near — brand red */
+                : 'text-zinc-800 dark:text-zinc-300' /* far/mid — visible on both modes */
+            }`}
+            style={{
+              left: `${item.x}%`,
+              fontSize: layer.size,
+              opacity: layer.opacity,
+            }}
+            initial={{ y: -30, opacity: 0, rotate: 0, scale: 1 }}
+            animate={{
+              y: '110vh',
+              opacity: [0, layer.opacity, layer.opacity, 0],
+              rotate: item.rotation,
+              scale: [1, 1, 0.6],
+            }}
+            transition={{
+              y: { duration: item.duration, ease: 'linear', delay: item.delay },
+              rotate: { duration: item.duration, ease: 'linear', delay: item.delay },
+              scale: { duration: item.duration, ease: 'easeIn', delay: item.delay },
+              opacity: {
+                duration: item.duration,
+                delay: item.delay,
+                times: [0, 0.08, 0.78, 1],
+              },
+            }}
+            onAnimationComplete={() => remove(item.id)}
+          >
+            {item.symbol}
+          </motion.span>
+        );
+      })}
     </div>
   );
 };
